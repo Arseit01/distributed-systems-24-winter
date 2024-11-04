@@ -1,12 +1,20 @@
-# syntax=docker/dockerfile:1
+# Use the official Python image from Docker Hub
+FROM python:3.12-slim
 
-FROM python:3.12-slim-buster
+# Set the working directory
+WORKDIR /app
 
-WORKDIR /python-docker
+# Copy requirements file
+COPY requirements.txt .
 
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the application code
 COPY . .
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# Expose the port the app runs on
+EXPOSE 5000
+
+# Define the command to run the application
+CMD ["flask", "run", "--host=0.0.0.0"]
