@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.8-slim-buster
+FROM alpine:3.19
 
 WORKDIR /python-docker
 
