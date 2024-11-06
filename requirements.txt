@@ -7,7 +7,9 @@ Flask==3.0.3
 Flask-Markdown==0.3
 flask-openapi3==4.0.1
 flask-smorest==0.45.0
+Flask-SQLAlchemy==3.1.1
 flask-swagger-ui==4.11.1
+greenlet==3.1.1
 itsdangerous==2.2.0
 Jinja2==3.1.4
 Markdown==3.7
@@ -17,6 +19,7 @@ marshmallow==3.23.1
 packaging==24.1
 pydantic==2.9.2
 pydantic_core==2.23.4
+SQLAlchemy==2.0.36
 typing_extensions==4.12.2
 webargs==8.6.0
 Werkzeug==3.1.1
