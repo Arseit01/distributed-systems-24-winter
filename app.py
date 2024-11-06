@@ -4,7 +4,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 import markdown
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
-
+import os
 # App and API Configurations
 app = Flask(__name__)
 app.config["API_TITLE"] = "Shopping API"
@@ -12,7 +12,8 @@ app.config["API_VERSION"] = "v1"
 app.config["OPENAPI_VERSION"] = "3.0.3"
 app.config["OPENAPI_JSON_PATH"] = "openapi.json"  # JSON endpoint for Swagger UI
 app.config["OPENAPI_URL_PREFIX"] = "/"            # Serve OpenAPI JSON at the root
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+db_path = os.path.join(os.path.dirname(__file__), "shopping.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 
 # Initialize database and API
 db = SQLAlchemy(app)
