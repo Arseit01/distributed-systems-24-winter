@@ -1,9 +1,9 @@
-from flask import Flask, render_template, render_template_string
-from flask_smorest import Api, Blueprint
+from flask import Flask, render_template_string
+from flask_smorest import Api, Blueprint, abort
 from flask_swagger_ui import get_swaggerui_blueprint
 import markdown
-import json
 from flask_sqlalchemy import SQLAlchemy
+from marshmallow import Schema, fields
 
 # App and API Configurations
 app = Flask(__name__)
@@ -19,20 +19,71 @@ db = SQLAlchemy(app)
 api = Api(app)
 
 # Define Blueprint with flask-smorest
-blp = Blueprint("shopping", __name__, description="Operations on shopping items")
 
-# Test data model
 class Item(db.Model):
+    __tablename__ = "items"
     name = db.Column(db.String, primary_key=True)
     amount = db.Column(db.Integer)
 
-# Endpoint in Blueprint
-@blp.route("/api/shopping/<string:name>")
-@blp.response(200, description="Successfully retrieved item.")
-def get_item(name):
-    return {"name": name, "amount": 5}
+class ItemSchema(Schema):
+    name = fields.String(required=True)
+    amount = fields.Integer(required=True)
 
-# Register blueprint with the API
+# Blueprint for shopping endpoints
+blp = Blueprint("shopping", __name__, description="Operations on shopping items")
+
+# Registering the schema
+item_schema = ItemSchema()
+items_schema = ItemSchema(many=True)
+
+# Initialize the database
+with app.app_context():
+    db.create_all()
+
+# Create a new item
+@blp.route("/api/shopping", methods=["POST"])
+@blp.arguments(ItemSchema)
+@blp.response(201, ItemSchema)
+def create_item(data):
+    item = Item(**data)
+    db.session.add(item)
+    db.session.commit()
+    return item
+
+# Get all items
+@blp.route("/api/shopping", methods=["GET"])
+@blp.response(200, ItemSchema(many=True))
+def get_items():
+    items = Item.query.all()
+    return items
+
+# Get an item by name
+@blp.route("/api/shopping/<string:name>", methods=["GET"])
+@blp.response(200, ItemSchema)
+def get_item(name):
+    item = Item.query.get_or_404(name)
+    return item
+
+# Update an item by name
+@blp.route("/api/shopping/<string:name>", methods=["PUT"])
+@blp.arguments(ItemSchema)
+@blp.response(200, ItemSchema)
+def update_item(data, name):
+    item = Item.query.get_or_404(name)
+    item.amount = data["amount"]
+    db.session.commit()
+    return item
+
+# Delete an item by name
+@blp.route("/api/shopping/<string:name>", methods=["DELETE"])
+@blp.response(204)
+def delete_item(name):
+    item = Item.query.get_or_404(name)
+    db.session.delete(item)
+    db.session.commit()
+    return "", 204
+
+# Register the blueprint with the API only once
 api.register_blueprint(blp)
 
 # Swagger UI configuration
