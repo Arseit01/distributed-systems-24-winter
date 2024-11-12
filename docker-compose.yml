@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgresql-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: shopping_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # to check what's inside the db
+  adminer:
+    image: adminer
+    container_name: admirer-db
+    restart: always
+    ports:
+      - "8081:8080"
+
+  shopping_backend:
+    container_name: shopping-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:5000"
+    depends_on:
+      - db
+    links:
+      - db
+
+volumes:
+  postgres_data:
