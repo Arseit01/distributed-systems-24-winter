@@ -1,6 +1,7 @@
 from flask import Flask, render_template_string
 from flask_smorest import Api, Blueprint, abort
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
 import markdown
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
@@ -18,6 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 # Initialize database and API
 db = SQLAlchemy(app)
 api = Api(app)
+CORS(app)
 
 # Define Blueprint with flask-smorest
 
@@ -112,4 +114,4 @@ def hello():
 
 # Run the app
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=8080)

@@ -4,6 +4,7 @@ blinker==1.8.2
 click==8.1.7
 colorama==0.4.6
 Flask==3.0.3
+Flask-Cors==5.0.0
 Flask-Markdown==0.3
 flask-openapi3==4.0.1
 flask-smorest==0.45.0
