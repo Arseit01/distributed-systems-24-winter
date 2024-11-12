@@ -19,7 +19,7 @@ services:
     container_name: admirer-db
     restart: always
     ports:
-      - "8081:8080"
+      - "9451:8080"
 
   shopping_backend:
     container_name: shopping-backend
