@@ -19,7 +19,7 @@ services:
     container_name: admirer-db
     restart: always
     ports:
-      - "9451:8080"
+      - "8081:8080"
 
   shopping_backend:
     container_name: shopping-backend
@@ -27,7 +27,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:5000"
+      - "9451:5000"
     depends_on:
       - db
     links:
