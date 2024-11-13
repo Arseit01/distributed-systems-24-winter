@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string
+from flask import Flask, jsonify, render_template_string
 from flask_smorest import Api, Blueprint, abort
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
@@ -13,8 +13,9 @@ app.config["API_VERSION"] = "v1"
 app.config["OPENAPI_VERSION"] = "3.0.3"
 app.config["OPENAPI_JSON_PATH"] = "openapi.json"  # JSON endpoint for Swagger UI
 app.config["OPENAPI_URL_PREFIX"] = "/"            # Serve OpenAPI JSON at the root
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
+db_path = os.path.join(os.path.dirname(__file__), "shopping.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize database and API
@@ -28,6 +29,14 @@ class Item(db.Model):
     __tablename__ = "items"
     name = db.Column(db.String, primary_key=True)
     amount = db.Column(db.Integer)
+    
+    def serialize(self):
+        return {
+            "name": self.name,
+            "amount": self.amount
+        }
+    
+    
 
 class ItemSchema(Schema):
     name = fields.String(required=True)
@@ -65,8 +74,16 @@ def get_items():
 @blp.route("/api/shopping/<string:name>", methods=["GET"])
 @blp.response(200, ItemSchema)
 def get_item(name):
-    item = Item.query.get_or_404(name)
-    return item
+    try:
+        item = Item.query.get_or_404(name)
+        return jsonify({
+            "message": "Item found and retrieved successfully.",
+            "item": item.serialize()  # assuming `serialize()` converts `item` to a dictionary
+        })
+    except Exception as e:
+        print(e)
+        print("Exception got thrown")
+        abort(404, message={"error": "Item not found", "item_name": name, "status": "fail"})
 
 # Update an item by name
 @blp.route("/api/shopping/<string:name>", methods=["PUT"])
