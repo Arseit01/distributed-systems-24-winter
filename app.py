@@ -6,7 +6,9 @@ import markdown
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
 import os
+#import logging
 # App and API Configurations
+#logging.basicConfig(filename="record.log",level=logging.DEBUG)
 app = Flask(__name__)
 app.config["API_TITLE"] = "Shopping API"
 app.config["API_VERSION"] = "v1"
@@ -129,9 +131,11 @@ def servemd():
 # Simple test route
 @app.route('/')
 def hello():
+    #app.logger.debug("Hello World route accesed")
     return '<h1>Hello, World!</h1>'
+    
 
 # Run the app
 if __name__ == "__main__":
-    
-    app.run(debug=True)
+    debug_mode = bool(os.environ.get("DEBUG","True"))
+    app.run(debug=debug_mode)
