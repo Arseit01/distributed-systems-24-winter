@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopping-app-service
+spec:
+  selector:
+    app: shopping-app
+  ports:
+    - protocol: TCP
+      port: 9478        # External port
+      targetPort: 5000 # Internal container port
+  type: LoadBalancer  # Expose the service with a public IP (change to ClusterIP if internal only)

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-app
+  labels:
+    app: shopping-app
+spec:
+  replicas: 3  # Number of replicas for scalability
+  selector:
+    matchLabels:
+      app: shopping-app
+  template:
+    metadata:
+      labels:
+        app: shopping-app
+    spec:
+      containers:
+        - name: shopping-app
+          image: dryssel/shopping-app:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FLASK_ENV
+              value: "production"  # Set Flask environment to production
+            - name: DATABASE_URL
+              value: "postgresql://admin:admin@db:5432/shopping_db"  # Example DB URL
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
