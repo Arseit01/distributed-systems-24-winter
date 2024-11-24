@@ -56,7 +56,7 @@ The Release phase sets the environment variables before deploying the container.
     **Implementation**: The same docker image is used for all environments. Differences are limited to environment-specific configurations, such as the database URL or other things. <br> <br>
 11. Logs <br>
     **Principle**: The application should produce logs as event streams. <br>
-    **Implementation**:<br> <br>
+    **Implementation**: The Flask Application doenst manage the logs itself, and only puts the debug info and more out to the console. The logs can be accessed via the docker logs command. <br> <br>
 12. Admin processes <br>
     **Principle**: Run admin/management tasks as one-off processes. <br>
     **Implementation**: Administrative tasks, such as the database migration command "flask db upgrade", can be executed inside the container using the docker-compose exec command. This ensures that administrative tasks are separated from the main application logic. 
