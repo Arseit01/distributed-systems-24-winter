@@ -15,7 +15,8 @@ app.config["OPENAPI_JSON_PATH"] = "openapi.json"  # JSON endpoint for Swagger UI
 app.config["OPENAPI_URL_PREFIX"] = "/"            # Serve OpenAPI JSON at the root
 db_path = os.path.join(os.path.dirname(__file__), "shopping.db")
 #app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',f"sqlite:///{db_path}")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize database and API
@@ -132,4 +133,5 @@ def hello():
 
 # Run the app
 if __name__ == "__main__":
+    
     app.run(debug=True)
