@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, render_template_string
 from flask_smorest import Api, Blueprint, abort
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -5,56 +6,59 @@ from flask_cors import CORS
 import markdown
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
-import os
-#import logging
+from flask_migrate import Migrate
+
+import logging
+
+# Load environment variables from .env file
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
 # App and API Configurations
-#logging.basicConfig(filename="record.log",level=logging.DEBUG)
 app = Flask(__name__)
 app.config["API_TITLE"] = "Shopping API"
 app.config["API_VERSION"] = "v1"
 app.config["OPENAPI_VERSION"] = "3.0.3"
-app.config["OPENAPI_JSON_PATH"] = "openapi.json"  # JSON endpoint for Swagger UI
-app.config["OPENAPI_URL_PREFIX"] = "/"            # Serve OpenAPI JSON at the root
+app.config["OPENAPI_JSON_PATH"] = "openapi.json"
+app.config["OPENAPI_URL_PREFIX"] = "/"
+
+# Database configuration
+
+
 db_path = os.path.join(os.path.dirname(__file__), "shopping.db")
 #app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',f"sqlite:///{db_path}")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Initialize database and API
+# Initialize database, API, CORS, and Migrations
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 api = Api(app)
 CORS(app)
 
-# Define Blueprint with flask-smorest
-
+# Define database model
 class Item(db.Model):
     __tablename__ = "items"
     name = db.Column(db.String, primary_key=True)
     amount = db.Column(db.Integer)
-    
-    def serialize(self):
-        return {
-            "name": self.name,
-            "amount": self.amount
-        }
-    
-    
 
+    def serialize(self):
+        return {"name": self.name, "amount": self.amount}
+
+
+# Schema for validation
 class ItemSchema(Schema):
     name = fields.String(required=True)
     amount = fields.Integer(required=True)
 
+
 # Blueprint for shopping endpoints
 blp = Blueprint("shopping", __name__, description="Operations on shopping items")
-
-# Registering the schema
 item_schema = ItemSchema()
 items_schema = ItemSchema(many=True)
-
-# Initialize the database
-with app.app_context():
-    db.create_all()
 
 # Create a new item
 @blp.route("/api/shopping", methods=["POST"])
@@ -66,6 +70,7 @@ def create_item(data):
     db.session.commit()
     return item
 
+
 # Get all items
 @blp.route("/api/shopping", methods=["GET"])
 @blp.response(200, ItemSchema(many=True))
@@ -73,20 +78,14 @@ def get_items():
     items = Item.query.all()
     return items
 
+
 # Get an item by name
 @blp.route("/api/shopping/<string:name>", methods=["GET"])
 @blp.response(200, ItemSchema)
 def get_item(name):
-    try:
-        item = Item.query.get_or_404(name)
-        return jsonify({
-            "message": "Item found and retrieved successfully.",
-            "item": item.serialize()  # assuming `serialize()` converts `item` to a dictionary
-        })
-    except Exception as e:
-        print(e)
-        print("Exception got thrown")
-        abort(404, message={"error": "Item not found", "item_name": name, "status": "fail"})
+    item = Item.query.get_or_404(name)
+    return item
+
 
 # Update an item by name
 @blp.route("/api/shopping/<string:name>", methods=["PUT"])
@@ -98,6 +97,7 @@ def update_item(data, name):
     db.session.commit()
     return item
 
+
 # Delete an item by name
 @blp.route("/api/shopping/<string:name>", methods=["DELETE"])
 @blp.response(204)
@@ -107,12 +107,13 @@ def delete_item(name):
     db.session.commit()
     return "", 204
 
-# Register the blueprint with the API only once
+
+# Register the blueprint with the API
 api.register_blueprint(blp)
 
 # Swagger UI configuration
 SWAGGER_URL = "/swagger"
-API_URL = f"/{app.config['OPENAPI_JSON_PATH']}"  # Should match openapi.json endpoint
+API_URL = f"/{app.config['OPENAPI_JSON_PATH']}"
 swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
@@ -128,14 +129,14 @@ def servemd():
         html_content = markdown.markdown(md_content)
         return render_template_string('<html><body>{{ content | safe }}</body></html>', content=html_content)
 
+
 # Simple test route
 @app.route('/')
 def hello():
-    #app.logger.debug("Hello World route accesed")
     return '<h1>Hello, World!</h1>'
-    
 
-# Run the app
+
+# Main entry point
 if __name__ == "__main__":
-    debug_mode = bool(os.environ.get("DEBUG","True"))
-    app.run(debug=debug_mode)
+    debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
+    app.run(debug=debug_mode, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
