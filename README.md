@@ -36,29 +36,30 @@ Each factor will be briefly explained, followed by an explanation of its impleme
    **Principle**: The backing services, such as a database, are treated as attached resources. <br>
    **Implementation**: The postgresql database is treated as a separate service in the docker-compose file. It is attached via a separate environment variable in the backend service. <br> <br>
 5. Build, release, run <br>
-   **Principle**: <br>
-   **Implementation**:<br> <br>
+   **Principle**: Build and run stages are strictly separated. <br>
+   **Implementation**: The build phase of the application is handled by docker, where the code is packaged into a docker image. 
+The Release phase sets the environment variables before deploying the container. The Run phase refers to the actual execution of the application in the docker container. <br> <br>
 6. Processes <br>
-   **Principle**: <br>
-   **Implementation**:<br> <br>
+   **Principle**: The application is executed as one or more stateless processes. Persistent data is stored on a backing service. <br>
+   **Implementation**: The application runs inside a docker container. It does not rely on in-memory state and all needed data is stored in an external backing service, such as the PostgreSQL database. A REST api is used to further support this factor. <br> <br>
 7. Port binding <br>
-   **Principle**: <br>
-   **Implementation**:<br> <br>
+   **Principle**: Services are making themselves available via exposed ports. <br>
+   **Implementation**: The flask application is automatically exposed on port 5000 inside the Docker container. The docker-file then exposes the application on port 8080 to the host machine. This allows the application to be accessed externally. <br> <br>
 8. Concurrency <br>
-   **Principle**: <br>
-   **Implementation**:<br> <br>
+   **Principle**: The application can scale out via the process model.<br>
+   **Implementation**: By running multiple instances of the application, the number of processes handling incoming requests can be increased. This can be done with Kubernetes. <br> <br>
 9. Disposability <br>
-   **Principle**: <br>
-   **Implementation**:<br> <br>
+   **Principle**: Maximize robustness and resilience with a fast startup and shutdown. <br>
+   **Implementation**: Docker containers are designed to start quickly, with minimal initialization time, and to stop gracefully. In case of a failure, the container can restart quickly. <br> <br>
 10. Dev/prod parity <br>
-    **Principle**: <br>
-    **Implementation**:<br> <br>
+    **Principle**: Development, staging and production are kept as similar as possible. <br>
+    **Implementation**: The same docker image is used for all environments. Differences are limited to environment-specific configurations, such as the database URL or other things. <br> <br>
 11. Logs <br>
-    **Principle**: <br>
+    **Principle**: The application should produce logs as event streams. <br>
     **Implementation**:<br> <br>
 12. Admin processes <br>
-    **Principle**: <br>
-    **Implementation**: 
+    **Principle**: Run admin/management tasks as one-off processes. <br>
+    **Implementation**: Administrative tasks, such as the database migration command "flask db upgrade", can be executed inside the container using the docker-compose exec command. This ensures that administrative tasks are separated from the main application logic. 
 
 Sources: <br>
 https://12factor.net/ <br>
