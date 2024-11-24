@@ -65,3 +65,31 @@ Sources: <br>
 https://12factor.net/ <br>
 https://en.wikipedia.org/wiki/Twelve-Factor_App_methodology <br>
 https://www.divio.com/blog/12-factor-methodology-beginner-guide/
+
+
+
+----
+
+
+### Kubernetes Stuff
+
+```sh
+sudo microk8s kubectl get pods
+```
+
+Monitor rollout
+```sh
+sudo microk8s kubectl rollout status deployment/shopping-app
+```
+
+Recrating Pods 
+```sh
+sudo microk8s kubectl delete pod -l app=shopping-app
+```
+
+
+Cleaning completly up
+```sh
+sudo microk8s kubectl delete -f deployment.yaml
+sudo microk8s kubectl apply -f deployment.yaml
+```
