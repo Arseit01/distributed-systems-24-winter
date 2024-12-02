@@ -86,6 +86,12 @@ Recrating Pods
 ```sh
 sudo microk8s kubectl delete pod -l app=shopping-app
 ```
+Checking inside the database
+```sh
+kubectl exec -it shopping-db-5dd6877c7b-tb2tn -- psql -U admin -d shopping_db
+\dt
+```
+
 
 
 Cleaning completly up
