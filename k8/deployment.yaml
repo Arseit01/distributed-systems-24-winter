@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
         - name: shopping-app
-          image: dryssel/distr-flask:v5
+          image: dryssel/distr-flask:v6
           ports:
             - containerPort: 5000
           env:
             - name: FLASK_ENV
               value: "production"  # Set Flask environment to production
             - name: DATABASE_URL
-              value: "postgresql://admin:admin@db:5432/shopping_db"  # Example DB URL
+              value: "postgresql://admin:admin@shpping-db:5432/shopping_db"  # Example DB URL
           readinessProbe:
             httpGet:
               path: /
