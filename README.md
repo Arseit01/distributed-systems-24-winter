@@ -93,3 +93,7 @@ Cleaning completly up
 sudo microk8s kubectl delete -f deployment.yaml
 sudo microk8s kubectl apply -f deployment.yaml
 ```
+get node
+```sh
+sudo microk8s kubectl get nodes -o wide
+``
