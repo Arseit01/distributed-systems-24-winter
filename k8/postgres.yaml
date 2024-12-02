@@ -14,6 +14,25 @@ spec:
       labels:
         app: shopping-db
     spec:
+      initContainers:
+        - name: init-postgres
+          image: postgres:17
+          command:
+            - "sh"
+            - "-c"
+            - |
+              until pg_isready -h localhost -U admin; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+              psql -U admin -d shopping_db -c "CREATE TABLE IF NOT EXISTS items (name VARCHAR PRIMARY KEY, amount INTEGER);"
+          env:
+            - name: POSTGRES_USER
+              value: "admin"
+            - name: POSTGRES_PASSWORD
+              value: "admin"
+            - name: POSTGRES_DB
+              value: "shopping_db"
       containers:
         - name: postgres
           image: postgres:17
@@ -31,8 +50,7 @@ spec:
               name: postgres-data
       volumes:
         - name: postgres-data
-          emptyDir: {}  # Use PersistentVolumeClaim for production
-
+          emptyDir: {}  # You can replace with a PersistentVolumeClaim for production
 ---
 apiVersion: v1
 kind: Service
