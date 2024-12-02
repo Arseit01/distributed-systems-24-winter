@@ -23,7 +23,7 @@ spec:
             - name: FLASK_ENV
               value: "production"  # Set Flask environment to production
             - name: DATABASE_URL
-              value: "postgresql://admin:admin@shpping-db:5432/shopping_db"  # Example DB URL
+              value: "postgresql://admin:admin@shopping-db:5432/shopping_db"  # Example DB URL
           readinessProbe:
             httpGet:
               path: /
