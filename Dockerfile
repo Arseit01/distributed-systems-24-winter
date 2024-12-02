@@ -4,9 +4,12 @@ FROM python:3.12-slim
 # Set the working directory
 WORKDIR /app
 
-# Install librariers for psycopg2
-RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev
-
+# Install libraries for psycopg2 and build-essential
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file
 COPY requirements.txt .
