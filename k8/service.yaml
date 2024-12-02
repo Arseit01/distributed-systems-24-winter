@@ -8,5 +8,6 @@ spec:
   ports:
     - protocol: TCP
       port: 9478        # External port
-      targetPort: 5000 # Internal container port
-  type: LoadBalancer  # Expose the service with a public IP (change to ClusterIP if internal only)
+      targetPort: 5000   # Internal container port
+      nodePort: 30000    # Optional, you can specify a port here or let Kubernetes choose one
+  type: NodePort  # Change this to NodePort
