@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: shopping-app
-          image: dryssel/distr-flask:v6
+          image: dryssel/distr-flask:sqlite
           ports:
             - containerPort: 5000
           env:
