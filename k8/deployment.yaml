@@ -5,7 +5,7 @@ metadata:
   labels:
     app: shopping-app
 spec:
-  replicas: 3  # Number of replicas for scalability
+  replicas: 1  # Number of replicas for scalability
   selector:
     matchLabels:
       app: shopping-app
