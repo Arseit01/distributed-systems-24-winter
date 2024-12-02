@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: shopping-app
-          image: dryssel/distr-flask:v4
+          image: dryssel/distr-flask:v5
           ports:
             - containerPort: 5000
           env:
