@@ -137,4 +137,5 @@ def hello():
 # Main entry point
 if __name__ == "__main__":
     debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
+    db.create_all()
     app.run(debug=debug_mode, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
