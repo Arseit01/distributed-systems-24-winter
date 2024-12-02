@@ -5,6 +5,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
 import markdown
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.engine.url import make_url
 from marshmallow import Schema, fields
 from flask_migrate import Migrate
 import psycopg2
@@ -141,12 +142,30 @@ def hello():
 def test_db_connection_route():
     try:
         # Attempt to create a database session
+        database_url = app.config['SQLALCHEMY_DATABASE_URI']
+        db_info = make_url(database_url)
         with db.engine.connect() as connection:
             connection.execute(text("SELECT 1"))
-            return jsonify({"success": True, "message": "Database connection successful"}), 200
+            return jsonify({
+            "success": True,
+            "message": "Database connection successful",
+            "details": {
+                "drivername": db_info.drivername,
+                "host": db_info.host,
+                "port": db_info.port,
+                "database": db_info.database,
+                "username": db_info.username
+            }
+        }), 200
     except Exception as e:
         return jsonify({"success": False, "message": f"Database connection failed: {e}"}), 500
 
+
+@app.route('/table',methods = ['GET'])
+def create_tables():
+    with db.engine.connect() as connection : 
+        connection.execute(text( "CREATE TABLE items ( name VARCHAR PRIMARY KEY, amount INTEGER);"))
+        return "tables created"
 
 
 def test_db_connection():
