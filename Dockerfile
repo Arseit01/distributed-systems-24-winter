@@ -25,4 +25,4 @@ COPY . .
 EXPOSE 5000
 
 # Define the command to run the application
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD flask db init && flask db migrate && flask db upgrade && flask run --host=0.0.0.0
