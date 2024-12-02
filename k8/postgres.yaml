@@ -21,10 +21,6 @@ spec:
             - "sh"
             - "-c"
             - |
-              until pg_isready -h localhost -U admin; do
-                echo "Waiting for PostgreSQL to be ready..."
-                sleep 2
-              done
               psql -U admin -d shopping_db -c "CREATE TABLE IF NOT EXISTS items (name VARCHAR PRIMARY KEY, amount INTEGER);"
           env:
             - name: POSTGRES_USER
