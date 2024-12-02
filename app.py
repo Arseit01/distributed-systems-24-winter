@@ -10,6 +10,8 @@ from flask_migrate import Migrate
 import psycopg2
 import logging
 
+from sqlalchemy.sql import text
+
 # Load environment variables from .env file
 
 
@@ -140,7 +142,7 @@ def test_db_connection_route():
     try:
         # Attempt to create a database session
         with db.engine.connect() as connection:
-            connection.execute("SELECT 1")  # Simple query to check connection
+            connection.execute(text("SELECT 1"))
             return jsonify({"success": True, "message": "Database connection successful"}), 200
     except Exception as e:
         return jsonify({"success": False, "message": f"Database connection failed: {e}"}), 500
