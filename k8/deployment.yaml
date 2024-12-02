@@ -17,6 +17,7 @@ spec:
       containers:
         - name: shopping-app
           image: dryssel/distr-flask:v7
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           env:
