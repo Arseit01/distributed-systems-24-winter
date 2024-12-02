@@ -7,15 +7,24 @@ Image can be found under https://hub.docker.com/r/dryssel/distr-flask
 ## Useful commands
 
 run server localy in debug mode
-
 ```sh
 flask run --debug  
 ```  
 
-docker build command
-
+build the docker image 
 ```sh
 docker build -t sampleapp:v1 .
+```
+
+build/download the images and start the containers
+```sh
+docker compose up -d
+```
+
+start the kubernetes pods
+```sh
+cd .\k8\
+kubectl apply -f .
 ```
 
 ## 12-factor app methodology
@@ -71,7 +80,8 @@ https://www.divio.com/blog/12-factor-methodology-beginner-guide/
 ----
 
 
-### Kubernetes Stuff
+### More Kubernetes Stuff
+
 create all .yaml files
 ```sh
 sudo microk8s kubectl apply -f . 
@@ -89,13 +99,12 @@ Recrating Pods
 ```sh
 sudo microk8s kubectl delete pod -l app=shopping-app
 ```
+
 Checking inside the database
 ```sh
 kubectl exec -it shopping-db-5dd6877c7b-tb2tn -- psql -U admin -d shopping_db
 \dt
 ```
-
-
 
 Cleaning completly up
 ```sh
