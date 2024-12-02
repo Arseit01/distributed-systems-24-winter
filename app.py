@@ -7,7 +7,7 @@ import markdown
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
 from flask_migrate import Migrate
-
+import psycopg2
 import logging
 
 # Load environment variables from .env file
