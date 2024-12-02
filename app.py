@@ -150,6 +150,7 @@ def test_db_connection_route():
 
 
 def test_db_connection():
+    print(db.engine.connect())
     try:
         # Use SQLAlchemy engine to execute a simple query
         with db.engine.connect() as connection:
