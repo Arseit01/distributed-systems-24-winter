@@ -134,8 +134,40 @@ def hello():
     return '<h1>Hello, World!</h1>'
 
 
+# Route to test database connection
+@app.route('/db', methods=['GET'])
+def test_db_connection_route():
+    try:
+        # Attempt to create a database session
+        with db.engine.connect() as connection:
+            connection.execute("SELECT 1")  # Simple query to check connection
+            return jsonify({"success": True, "message": "Database connection successful"}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Database connection failed: {e}"}), 500
+
+
+
+def test_db_connection():
+    try:
+        # Use SQLAlchemy engine to execute a simple query
+        with db.engine.connect() as connection:
+            result = connection.execute("SELECT 1").scalar()
+            if result == 1:
+                logging.info("Database connection successful!")
+            else:
+                logging.error("Unexpected result from database connection test.")
+    except Exception as e:
+        logging.error(f"Failed to connect to the database: {e}")
+        raise
+
+
 # Main entry point
 if __name__ == "__main__":
     debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
     db.create_all()
+    
+    try:
+        test_db_connection()  # Test the database connection
+    except Exception as e:
+        logging.critical("Exiting application due to database connection failure.")
     app.run(debug=debug_mode, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
