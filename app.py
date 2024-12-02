@@ -29,7 +29,7 @@ app.config["OPENAPI_URL_PREFIX"] = "/"
 
 db_path = os.path.join(os.path.dirname(__file__), "shopping.db")
 #app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@shopping-db:5432/shopping_db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db:5432/shopping_db'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',f"sqlite:///{db_path}")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
