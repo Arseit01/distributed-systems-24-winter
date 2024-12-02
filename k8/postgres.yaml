@@ -14,21 +14,6 @@ spec:
       labels:
         app: shopping-db
     spec:
-      initContainers:
-        - name: init-postgres
-          image: postgres:17
-          command:
-            - "sh"
-            - "-c"
-            - |
-              psql -U admin -d shopping_db -c "CREATE TABLE IF NOT EXISTS items (name VARCHAR PRIMARY KEY, amount INTEGER);"
-          env:
-            - name: POSTGRES_USER
-              value: "admin"
-            - name: POSTGRES_PASSWORD
-              value: "admin"
-            - name: POSTGRES_DB
-              value: "shopping_db"
       containers:
         - name: postgres
           image: postgres:17
@@ -46,7 +31,8 @@ spec:
               name: postgres-data
       volumes:
         - name: postgres-data
-          emptyDir: {}  # You can replace with a PersistentVolumeClaim for production
+          emptyDir: {}  # Use PersistentVolumeClaim for production
+
 ---
 apiVersion: v1
 kind: Service
