@@ -24,7 +24,7 @@ services:
   shopping_backend:
     container_name: shopping-backend
     environment: 
-      DATABASE_URL: postgresql://admin:admin@db:5432/shopping_db 
+      DATABASE_URL: postgresql://admin:admin@shopping-db:5432/shopping_db 
       DEBUG: True
     build:
       context: .
