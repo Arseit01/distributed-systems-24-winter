@@ -72,7 +72,10 @@ https://www.divio.com/blog/12-factor-methodology-beginner-guide/
 
 
 ### Kubernetes Stuff
-
+create all .yaml files
+```sh
+sudo microk8s kubectl apply -f . 
+```
 ```sh
 sudo microk8s kubectl get pods
 ```
