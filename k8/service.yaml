@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: shopping-app-service
+  name: shopping-app
 spec:
   selector:
     app: shopping-app
   ports:
     - protocol: TCP
-      port: 9478        # External port
+      port: 8080        # External port
       targetPort: 5000   # Internal container port
       nodePort: 30000    # Optional, you can specify a port here or let Kubernetes choose one
   type: NodePort  # Change this to NodePort
