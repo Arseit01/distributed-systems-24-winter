@@ -5,7 +5,7 @@ metadata:
   labels:
     app: shopping-app
 spec:
-  replicas: 1  # Number of replicas for scalability
+  replicas: 2  # Number of replicas for scalability
   selector:
     matchLabels:
       app: shopping-app
@@ -14,6 +14,19 @@ spec:
       labels:
         app: shopping-app
     spec:
+      initContainers:  # Add an init container to wait for the migration Job
+        - name: wait-for-migrations
+          image: bitnami/kubectl:latest
+          command:
+            - "/bin/sh"
+          args:
+            - |
+              echo "Waiting for migration Job to complete...";
+              while ! kubectl wait --for=condition=complete --timeout=60s job/shopping-app-migration; do
+                echo "Still waiting...";
+                sleep 5;
+              done;
+              echo "Migration Job completed!";
       containers:
         - name: shopping-app
           image: dryssel/distr-flask:v7
