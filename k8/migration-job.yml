@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shopping-app-migration
+  labels:
+    app: shopping-app
+spec:
+  template:
+    spec:
+      containers:
+        - name: migration
+          image: dryssel/distr-flask:v7
+          imagePullPolicy: Always
+          env:
+            - name: FLASK_ENV
+              value: "production"  # Set Flask environment to production
+            - name: DATABASE_URL
+              value: "postgresql://admin:admin@shopping-db:5432/shopping_db"  # Example DB URL
+            - name: DEBUG
+              value: "true"
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Running database migrations...";
+              flask db upgrade && echo "Migrations completed!";
+      restartPolicy: Never
